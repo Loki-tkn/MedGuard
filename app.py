@@ -63,11 +63,10 @@ st.set_page_config(
 
 # ------------------------------------------------------------------
 # Custom-drawn, tileable medicine-themed background pattern.
-# Original SVG artwork (not a stock photo) kept at very low opacity so
-# it reads as texture behind the light theme rather than a distraction.
+# Soft Teal/Mint lines matching the new color theme
 # ------------------------------------------------------------------
 _MED_BG_SVG = """<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'>
-  <g fill='none' stroke='#16A34A' stroke-width='1.3' stroke-opacity='0.07'>
+  <g fill='none' stroke='#20B26C' stroke-width='1.2' stroke-opacity='0.08'>
     <!-- capsule -->
     <g transform='translate(20,25) rotate(35)'>
       <rect x='0' y='0' width='46' height='18' rx='9'/>
@@ -92,23 +91,26 @@ _MED_BG_SVG = """<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220
 </svg>"""
 _MED_BG_DATA_URI = "data:image/svg+xml," + urllib.parse.quote(_MED_BG_SVG)
 
-# Modern White + Green CSS Styling
+# ------------------------------------------------------------------
+# Updated Custom CSS matching "The Road to Health" Color Palette
+# Light Mint / Deep Teal / Warm Amber Disclaimer
+# ------------------------------------------------------------------
 _CSS_TEMPLATE = textwrap.dedent("""
     <style>
         /* Global Styles & Font */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
         html, body, [class*="css"] {
-            font-family: 'Inter', sans-serif;
-            color: #0F172A;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1F2937;
         }
 
-        /* Medicine-themed background texture across the whole app */
+        /* Light Mint Gradient Background across the whole app */
         [data-testid="stAppViewContainer"] {
-            background-color: #FFFFFF;
+            background-color: #EBF8F5;
             background-image:
-                radial-gradient(circle at 12% 15%, rgba(22, 163, 74, 0.07) 0%, transparent 45%),
-                radial-gradient(circle at 88% 85%, rgba(21, 128, 61, 0.06) 0%, transparent 45%),
+                radial-gradient(circle at 10% 10%, rgba(32, 178, 108, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 90% 85%, rgba(27, 122, 120, 0.08) 0%, transparent 50%),
                 url("__MED_BG_DATA_URI__");
             background-repeat: no-repeat, no-repeat, repeat;
             background-size: auto, auto, 220px 220px;
@@ -116,23 +118,23 @@ _CSS_TEMPLATE = textwrap.dedent("""
         }
 
         [data-testid="stSidebar"] {
-            background-color: #F0FDF4;
-            border-right: 1px solid #BBF7D0;
+            background-color: #F3FCFA;
+            border-right: 1px solid #D1EBE3;
         }
 
         /* App Header Banner */
         .header-container {
             position: relative;
-            background: linear-gradient(135deg, #FFFFFF 0%, #F0FDF4 60%, #DCFCE7 100%);
+            background: linear-gradient(135deg, #FFFFFF 0%, #EBF8F5 55%, #D6F5EC 100%);
             padding: 2.25rem 2rem;
-            border-radius: 16px;
-            color: #0F172A;
+            border-radius: 20px;
+            color: #114B4E;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 25px -5px rgba(22, 163, 74, 0.12);
-            border: 1px solid #BBF7D0;
+            box-shadow: 0 10px 30px -5px rgba(32, 178, 108, 0.12);
+            border: 1px solid #BCEAD9;
             overflow: hidden;
+            text-align: center;
         }
-        /* Decorative background: soft green glow + faint dot grid, pure CSS (no external assets) */
         .header-container::before {
             content: "";
             position: absolute;
@@ -140,54 +142,62 @@ _CSS_TEMPLATE = textwrap.dedent("""
             right: -60px;
             width: 260px;
             height: 260px;
-            background: radial-gradient(circle, rgba(22, 163, 74, 0.18) 0%, rgba(22, 163, 74, 0) 70%);
+            background: radial-gradient(circle, rgba(32, 178, 108, 0.18) 0%, rgba(32, 178, 108, 0) 70%);
             border-radius: 50%;
-            pointer-events: none;
-        }
-        .header-container::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(rgba(22, 163, 74, 0.08) 1px, transparent 1px);
-            background-size: 22px 22px;
             pointer-events: none;
         }
         .header-content {
             position: relative;
             z-index: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 1.25rem;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #D6F5EC;
+            color: #176B6B;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 6px 18px;
+            border-radius: 9999px;
+            border: 1px solid #A3E4D1;
         }
         .header-icon {
             flex-shrink: 0;
-            width: 56px;
-            height: 56px;
+            width: 58px;
+            height: 58px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(22, 163, 74, 0.10);
-            border: 1px solid rgba(22, 163, 74, 0.35);
-            border-radius: 14px;
+            background: #20B26C;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(32, 178, 108, 0.25);
+            margin-bottom: 0.5rem;
         }
         .header-icon svg {
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
+            stroke: #FFFFFF;
         }
         .header-title {
-            font-size: 2.25rem;
-            font-weight: 700;
+            font-size: 2.5rem;
+            font-weight: 800;
             margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #14532D;
+            color: #176B6B;
+            letter-spacing: -0.02em;
         }
         .header-subtitle {
-            color: #4B5563;
+            color: #4A6363;
             font-size: 1.05rem;
-            margin-top: 0.5rem;
-            font-weight: 400;
+            max-width: 720px;
+            margin: 0 auto;
+            font-weight: 500;
+            line-height: 1.6;
         }
         .section-icon {
             width: 18px;
@@ -199,89 +209,116 @@ _CSS_TEMPLATE = textwrap.dedent("""
 
         /* Badges */
         .badge-barcode {
-            background-color: #DBEAFE;
-            color: #1D4ED8;
+            background-color: #E0F2FE;
+            color: #0369A1;
             font-size: 0.85rem;
-            padding: 4px 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            border: 1px solid #93C5FD;
+            padding: 4px 14px;
+            border-radius: 9999px;
+            font-weight: 700;
+            border: 1px solid #BAE6FD;
         }
         .badge-fuzzy {
             background-color: #F3E8FF;
             color: #7E22CE;
             font-size: 0.85rem;
-            padding: 4px 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            border: 1px solid #D8B4FE;
+            padding: 4px 14px;
+            border-radius: 9999px;
+            font-weight: 700;
+            border: 1px solid #E9D5FF;
         }
         .badge-source-remote {
-            background-color: #E0F2FE;
-            color: #0369A1;
+            background-color: #D6F5EC;
+            color: #176B6B;
             font-size: 0.8rem;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-weight: 700;
         }
         .badge-source-local {
             background-color: #F1F5F9;
             color: #334155;
             font-size: 0.8rem;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-weight: 700;
         }
 
         /* Result Card Styles */
         .verified-card {
-            background: linear-gradient(145deg, #F0FDF4 0%, #DCFCE7 100%);
-            border: 1px solid #4ADE80;
-            border-radius: 16px;
+            background: linear-gradient(145deg, #FFFFFF 0%, #F0FAF7 100%);
+            border: 1.5px solid #20B26C;
+            border-radius: 18px;
             padding: 1.75rem;
-            color: #14532D;
+            color: #135253;
             margin-top: 1rem;
-            box-shadow: 0 10px 20px rgba(22, 163, 74, 0.08);
+            box-shadow: 0 12px 28px rgba(32, 178, 108, 0.10);
         }
         .warning-card {
             background: linear-gradient(145deg, #FEF2F2 0%, #FEE2E2 100%);
-            border: 1px solid #FCA5A5;
-            border-radius: 16px;
+            border: 1.5px solid #FCA5A5;
+            border-radius: 18px;
             padding: 1.75rem;
             color: #7F1D1D;
             margin-top: 1rem;
-            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.08);
+            box-shadow: 0 12px 28px rgba(220, 38, 38, 0.08);
         }
         .med-title {
-            font-size: 1.75rem;
-            font-weight: 700;
+            font-size: 1.85rem;
+            font-weight: 800;
             margin-bottom: 0.25rem;
-            color: #14532D;
+            color: #176B6B;
         }
         .field-label {
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             font-size: 0.75rem;
-            color: #15803D;
+            color: #1A7A68;
             margin-top: 1rem;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.35rem;
         }
         .field-value {
             font-size: 1rem;
+            line-height: 1.55;
+            color: #1F2937;
+            background: #FFFFFF;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            border: 1px solid #D1EBE3;
+        }
+
+        /* Warm Cream / Amber Medical Disclaimer Banner (Matching Image Footer) */
+        .disclaimer-banner {
+            background-color: #FFFBEB;
+            border: 1.5px solid #FDE68A;
+            border-radius: 14px;
+            padding: 1rem 1.5rem;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #92400E;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.06);
+        }
+        .disclaimer-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .disclaimer-text {
+            font-size: 0.88rem;
             line-height: 1.5;
-            color: #14532D;
-            background: rgba(255, 255, 255, 0.6);
-            padding: 0.75rem;
-            border-radius: 8px;
-            border: 1px solid rgba(22, 163, 74, 0.15);
+            color: #B45309;
+        }
+        .disclaimer-text strong {
+            color: #D97706;
+            font-weight: 700;
         }
 
         /* Code Box for Raw OCR */
         .raw-box {
             background-color: #F8FAFC;
             border: 1px solid #CBD5E1;
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 1rem;
             font-family: monospace;
             font-size: 0.9rem;
@@ -296,7 +333,7 @@ _CSS_TEMPLATE = textwrap.dedent("""
             position: fixed;
             inset: 0;
             z-index: 9999;
-            background: linear-gradient(135deg, #FFFFFF 0%, #F0FDF4 60%, #DCFCE7 100%);
+            background: linear-gradient(135deg, #FFFFFF 0%, #EBF8F5 60%, #D6F5EC 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -304,31 +341,33 @@ _CSS_TEMPLATE = textwrap.dedent("""
             animation: splashFadeOut 1.9s ease forwards;
         }
         .splash-logo {
-            width: 92px;
-            height: 92px;
+            width: 96px;
+            height: 96px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(22, 163, 74, 0.10);
-            border: 1px solid rgba(22, 163, 74, 0.35);
-            border-radius: 22px;
+            background: #20B26C;
+            border-radius: 24px;
             margin-bottom: 1.25rem;
+            box-shadow: 0 12px 24px rgba(32, 178, 108, 0.3);
             animation: splashPulse 1.9s ease forwards;
         }
         .splash-logo svg {
-            width: 50px;
-            height: 50px;
+            width: 52px;
+            height: 52px;
+            stroke: #FFFFFF;
         }
         .splash-title {
-            font-size: 2.75rem;
-            font-weight: 700;
-            color: #14532D;
-            letter-spacing: 0.02em;
+            font-size: 2.85rem;
+            font-weight: 800;
+            color: #176B6B;
+            letter-spacing: -0.02em;
         }
         .splash-subtitle {
-            color: #4B5563;
-            font-size: 1rem;
+            color: #4A6363;
+            font-size: 1.05rem;
             margin-top: 0.5rem;
+            font-weight: 500;
         }
         @keyframes splashFadeOut {
             0%   { opacity: 1; }
@@ -422,8 +461,6 @@ def search_openfda(query: str):
     else:
         warnings = str(warnings_list).strip()
 
-    # Drug-drug interactions, straight from the official FDA label text.
-    # (Fallback source since NLM discontinued its dedicated Interaction API in Jan 2024.)
     interactions_list = item.get("drug_interactions", [])
     if isinstance(interactions_list, list):
         interactions = " ".join([str(i).strip() for i in interactions_list if str(i).strip()])
@@ -445,7 +482,7 @@ def search_openfda(query: str):
         "usage": format_text(usage, "Refer to packaging for indications.", 350),
         "dosage": format_text(dosage, "Refer to packaging for dosage instructions.", 350),
         "warnings": format_text(warnings, "No specific warnings listed in OpenFDA record.", 350),
-        "interactions": format_text(interactions, "", 400),  # empty string = not listed, handled at render time
+        "interactions": format_text(interactions, "", 400),
     }
 
 
@@ -454,9 +491,7 @@ def lookup_ndc_by_barcode(barcode: str):
     """
     TIER 1 FALLBACK — When a scanned barcode is not found in the local database,
     query the FDA NDC (National Drug Code) Directory (api.fda.gov/drug/ndc.json).
-    Many medicine barcodes (UPC-A / GS1) embed the 10 or 11-digit NDC code, so we
-    try the raw scanned value plus the most likely embedded NDC substrings.
-    Cached for 24 hours since the NDC Directory changes infrequently.
+    Cached for 24 hours.
     """
     if not barcode or not str(barcode).strip():
         return None
@@ -469,7 +504,6 @@ def lookup_ndc_by_barcode(barcode: str):
         candidates.append(digits[-11:])
     if len(digits) >= 10:
         candidates.append(digits[-10:])
-    # de-duplicate while preserving order
     seen = set()
     candidates = [c for c in candidates if not (c in seen or seen.add(c))]
 
@@ -513,11 +547,7 @@ def lookup_ndc_by_barcode(barcode: str):
 @st.cache_data(ttl=86400)
 def lookup_rxnorm_approximate(term: str, max_entries: int = 1):
     """
-    TIER 2 FALLBACK — When local fuzzy matching (thefuzz) against the small local
-    keyword list fails, delegate to RxNav's server-side approximate term matcher
-    (rxnav.nlm.nih.gov/REST/approximateTerm.json). This handles OCR misspellings
-    and partial names far better than naive string matching against a small list,
-    since it draws on the full RxNorm drug name vocabulary.
+    TIER 2 FALLBACK — Delegate to RxNav's approximate term matcher.
     Cached for 24 hours.
     """
     if not term or not str(term).strip():
@@ -544,7 +574,6 @@ def lookup_rxnorm_approximate(term: str, max_entries: int = 1):
 def extract_brand_name(drug_name_str: str) -> str:
     if not drug_name_str:
         return ""
-    # Split by slash / first to get the primary brand name
     first_part = drug_name_str.split("/")[0]
     words = [w for w in first_part.split() if len(w) >= 3 and w.isalpha()]
     return words[0] if words else first_part.split()[0]
@@ -553,19 +582,14 @@ def extract_brand_name(drug_name_str: str) -> str:
 def extract_generic_name(active_ingredient_str: str) -> str:
     if not active_ingredient_str:
         return ""
-    # Split by comma first to get the first compound
     first_part = active_ingredient_str.split(",")[0]
-    # Extract only alphabetical characters from words of length >= 3
     words = [w for w in first_part.split() if len(w) >= 3 and w.isalpha()]
     return words[0] if words else first_part.split()[0]
 
 
 @st.cache_data(ttl=86400)
 def lookup_rxnav(keyword: str):
-    """
-    Search RxNav API (https://rxnav.nlm.nih.gov/REST/rxcui.json?name={keyword})
-    to extract RxCUI codes. Cached for 24 hours.
-    """
+    """Search RxNav API. Cached for 24 hours."""
     if not keyword or not str(keyword).strip():
         return None
     clean_keyword = str(keyword).strip()
@@ -584,10 +608,7 @@ def lookup_rxnav(keyword: str):
 
 @st.cache_data(ttl=86400)
 def lookup_dailymed(keyword: str):
-    """
-    Search DailyMed API (https://dailymed.nlm.nih.gov/dailymed/services/v2/spls.json?drug_name={keyword})
-    to extract official package insert links & SPL IDs. Cached for 24 hours.
-    """
+    """Search DailyMed API. Cached for 24 hours."""
     if not keyword or not str(keyword).strip():
         return None
     clean_keyword = str(keyword).strip()
@@ -617,11 +638,7 @@ def lookup_dailymed(keyword: str):
 
 @st.cache_data(ttl=86400)
 def lookup_wikipedia_vietnam(keyword: str):
-    """
-    Search Wikipedia Vietnam API
-    (https://vi.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&titles={keyword}&format=json)
-    to extract Vietnamese summary text. Cached for 24 hours.
-    """
+    """Search Wikipedia Vietnam API. Cached for 24 hours."""
     if not keyword or not str(keyword).strip():
         return None
     clean_keyword = str(keyword).strip()
@@ -649,11 +666,7 @@ def lookup_wikipedia_vietnam(keyword: str):
 
 @st.cache_data(ttl=86400)
 def lookup_wikipedia_english(keyword: str):
-    """
-    Search Wikipedia English API (en.wikipedia.org) to extract an English
-    summary. Same shape/behavior as lookup_wikipedia_vietnam, just a
-    different-language endpoint. Cached for 24 hours.
-    """
+    """Search Wikipedia English API. Cached for 24 hours."""
     if not keyword or not str(keyword).strip():
         return None
     clean_keyword = str(keyword).strip()
@@ -680,10 +693,6 @@ def lookup_wikipedia_english(keyword: str):
 
 
 def fetch_all_external_apis(brand_query: str, generic_query: str):
-    """
-    Queries OpenFDA, RxNav, DailyMed, Wikipedia (EN) and Wikipedia (VI) in
-    parallel, using appropriate queries and fallbacks.
-    """
     results = {
         "openfda": None,
         "rxnav": None,
@@ -695,26 +704,18 @@ def fetch_all_external_apis(brand_query: str, generic_query: str):
         return results
 
     with ThreadPoolExecutor(max_workers=5) as executor:
-        # Submit tasks
-        # OpenFDA: brand query or generic query
         future_fda = executor.submit(search_openfda, brand_query or generic_query)
-        # RxNav: generic query or brand query
         future_rxnav = executor.submit(lookup_rxnav, generic_query or brand_query)
-        # DailyMed: brand query or generic query
         future_dailymed = executor.submit(lookup_dailymed, brand_query or generic_query)
-        # Wikipedia (Vietnamese): generic query or brand query
         future_wiki = executor.submit(lookup_wikipedia_vietnam, generic_query or brand_query)
-        # Wikipedia (English): generic query or brand query
         future_wiki_en = executor.submit(lookup_wikipedia_english, generic_query or brand_query)
         
-        # Gather results
         results["openfda"] = future_fda.result()
         results["rxnav"] = future_rxnav.result()
         results["dailymed"] = future_dailymed.result()
         results["wikipedia"] = future_wiki.result()
         results["wikipedia_en"] = future_wiki_en.result()
 
-    # Apply secondary fallbacks sequentially if one of them is empty and the queries are different
     if not results["openfda"] and generic_query and generic_query != brand_query:
         results["openfda"] = search_openfda(generic_query)
         
@@ -739,10 +740,8 @@ def fetch_all_external_apis(brand_query: str, generic_query: str):
 
 MIL_STRINGS = {
     "en": {
-        # Claim audit
         "claim_audit_title": "⚠️ **Claim Audit Alert**",
         "claim_audit_body": "Suspicious / exaggerated phrases detected in scanned text: {phrases}  \nPlease verify through official sources before use.",
-        # Credibility
         "cred_label": "CREDIBILITY",
         "cred_high_desc": "Verified by official FDA / DailyMed or exact Barcode match",
         "cred_med_desc": "Partial match via fuzzy OCR + Wikipedia reference",
@@ -750,13 +749,11 @@ MIL_STRINGS = {
         "cred_high": "HIGH",
         "cred_med": "MEDIUM",
         "cred_low": "LOW",
-        # Recall
         "recall_title": "🚨 **FDA RECALL NOTICE FOUND**",
         "recall_firm": "Firm",
         "recall_reason": "Reason",
         "recall_status": "Status",
         "recall_date": "Date",
-        # Cross-check table
         "xcheck_title": "📊 Cross-Check Table: OCR vs Official API",
         "xcheck_field": "Field",
         "xcheck_ocr": "OCR / Local DB",
@@ -773,7 +770,8 @@ MIL_STRINGS = {
         "xcheck_available": "✅ Available",
         "xcheck_seefda": "⚠️ See FDA",
         "xcheck_notverified": "❌ Not Verified",
-        # MIL Guide
+        "disclaimer_title": "Medical Disclaimer:",
+        "disclaimer_body": "All medical information and verification results provided on this application are for reference only and cannot replace professional doctors' diagnosis or treatment. When making medical decisions such as disease diagnosis or medication, be sure to consult a professional doctor.",
         "guide_title": "💡 MIL Guide: 4 Steps to Spot Fake / Unverified Medicines",
         "guide_body": """
 **Step 1 — Check the Registration Code 📋**
@@ -788,27 +786,18 @@ Vietnamese medicines must carry a valid registration number printed on the label
 - Barcodes starting with **000–019** = Made in USA
 - Barcodes starting with **400–440** = Made in Germany
 - Barcodes starting with **690–699** = Made in China
-- A barcode prefix that contradicts the stated country of origin is a **red flag**.
 
-**Step 3 — Watch for Exaggerated or Misleading Claims ⚠️**
-Suspect counterfeiting or misinformation if the label uses:
-- "100% cure", "guaranteed cure" — "miracle drug" (thần dược), "specific cure" (đặc trị)
-- "no side effects" — "heals all ailments" (bách bệnh), "secret formula" (bí quyết)
-- "no prescription needed" (không cần đơn) — "instant improvement" (cải thiện ngay)
-- No listed active ingredient, vague dosage, or pressure sales language
+**Step 3 — Watch for Exaggerated Claims ⚠️**
+- "100% cure", "miracle drug" (thần dược), "no side effects" (không tác dụng phụ)
 
 **Step 4 — Cross-Check with Official Sources 🌐**
 - **OpenFDA**: [api.fda.gov](https://api.fda.gov) — U.S. FDA drug label database
-- **DailyMed**: [dailymed.nlm.nih.gov](https://dailymed.nlm.nih.gov) — Official package inserts (NLM)
-- **Drug Authority Vietnam (DAV)**: [dav.gov.vn](https://dav.gov.vn) — Vietnam Ministry of Health drug registry
-- **WHO Prequalification**: [extranet.who.int](https://extranet.who.int/prequal) — WHO-certified medicines
+- **DailyMed**: [dailymed.nlm.nih.gov](https://dailymed.nlm.nih.gov) — Official package inserts
         """,
     },
     "vi": {
-        # Claim audit
         "claim_audit_title": "⚠️ **Cảnh báo kiểm tra tuyên bố**",
         "claim_audit_body": "Phát hiện cụm từ đáng ngờ / phóng đại trong văn bản quét: {phrases}  \nVui lòng xác minh qua nguồn chính thức trước khi sử dụng.",
-        # Credibility
         "cred_label": "ĐỘ TIN CẬY",
         "cred_high_desc": "Đã xác minh qua FDA / DailyMed chính thức hoặc khớp mã vạch chính xác",
         "cred_med_desc": "Khớp một phần qua OCR mờ + tham chiếu Wikipedia",
@@ -816,13 +805,11 @@ Suspect counterfeiting or misinformation if the label uses:
         "cred_high": "CAO",
         "cred_med": "TRUNG BÌNH",
         "cred_low": "THẤP",
-        # Recall
         "recall_title": "🚨 **ĐÃ TÌM THẤY THÔNG BÁO THU HỒI FDA**",
         "recall_firm": "Công ty",
         "recall_reason": "Lý do",
         "recall_status": "Trạng thái",
         "recall_date": "Ngày",
-        # Cross-check table
         "xcheck_title": "📊 Bảng đối chiếu: OCR vs API chính thức",
         "xcheck_field": "Trường",
         "xcheck_ocr": "OCR / CSDL cục bộ",
@@ -839,40 +826,28 @@ Suspect counterfeiting or misinformation if the label uses:
         "xcheck_available": "✅ Có sẵn",
         "xcheck_seefda": "⚠️ Xem FDA",
         "xcheck_notverified": "❌ Chưa xác minh",
-        # MIL Guide
+        "disclaimer_title": "Cảnh báo y tế:",
+        "disclaimer_body": "Tất cả thông tin y tế và kết quả xác minh trên ứng dụng này chỉ mang tính chất tham khảo và không thể thay thế cho chẩn đoán hoặc điều trị của bác sĩ chuyên khoa. Khi đưa ra các quyết định y tế như chẩn đoán bệnh hoặc dùng thuốc, hãy chắc chắn tham khảo ý kiến bác sĩ.",
         "guide_title": "💡 Hướng dẫn MIL: 4 bước nhận biết thuốc giả / chưa được kiểm duyệt",
         "guide_body": """
 **Bước 1 — Kiểm tra mã đăng ký 📋**
-Thuốc lưu hành tại Việt Nam phải có số đăng ký hợp lệ in trên nhãn:
 - `VD-XXXXX-XX` → Thuốc sản xuất trong nước
-- `VS-XXXXX-XX` → Thuốc đông y / thảo dược truyền thống
-- `GC-XXXXX-XX` → Thuốc nhập khẩu (Giấy phép nhập khẩu)
-- `VN-XXXXX-XX` → Thuốc nhập khẩu đã đăng ký nước ngoài
+- `VS-XXXXX-XX` → Thuốc đông y / thảo dược
+- `GC-XXXXX-XX` → Thuốc nhập khẩu (Giấy phép)
+- `VN-XXXXX-XX` → Thuốc nhập khẩu đã đăng ký
 
 **Bước 2 — Xác minh nguồn gốc mã vạch 🔢**
-- Mã vạch bắt đầu bằng **893** = Sản xuất tại Việt Nam
-- Mã vạch bắt đầu bằng **000–019** = Sản xuất tại Mỹ
-- Mã vạch bắt đầu bằng **400–440** = Sản xuất tại Đức
-- Mã vạch bắt đầu bằng **690–699** = Sản xuất tại Trung Quốc
-- Tiền tố mã vạch mâu thuẫn với nước xuất xứ là **dấu hiệu đáng ngờ**.
+- **893** = Việt Nam | **000–019** = Mỹ | **400–440** = Đức | **690–699** = Trung Quốc
 
 **Bước 3 — Cảnh giác với các tuyên bố phóng đại ⚠️**
-Nghi ngờ hàng giả hoặc thông tin sai lệch nếu nhãn thuốc có:
-- "Thần dược" (miracle drug), "đặc trị" (specific cure), "chữa khỏi hoàn toàn"
-- "Không tác dụng phụ", "bách bệnh" (cures all ailments), "bí quyết" (secret formula)
-- "Không cần đơn thuốc", "cải thiện ngay" (instant improvement)
-- Không liệt kê hoạt chất, liều dùng mơ hồ, hoặc ngôn ngữ tiếp thị áp lực
+- "Thần dược", "chữa khỏi 100%", "không tác dụng phụ"
 
 **Bước 4 — Đối chiếu với nguồn chính thức 🌐**
-- **OpenFDA**: [api.fda.gov](https://api.fda.gov) — Cơ sở dữ liệu nhãn thuốc FDA Hoa Kỳ
-- **DailyMed**: [dailymed.nlm.nih.gov](https://dailymed.nlm.nih.gov) — Tờ thông tin thuốc chính thức (NLM)
-- **Cục Dược Việt Nam (DAV)**: [dav.gov.vn](https://dav.gov.vn) — Sổ đăng ký thuốc Bộ Y tế
-- **WHO Prequalification**: [extranet.who.int](https://extranet.who.int/prequal) — Thuốc được WHO chứng nhận
+- **OpenFDA**: [api.fda.gov](https://api.fda.gov) | **DailyMed**: [dailymed.nlm.nih.gov](https://dailymed.nlm.nih.gov)
         """,
     },
 }
 
-# Suspicious patterns — detection uses both languages regardless of UI lang
 SUSPICIOUS_PATTERNS = [
     "100% cure", "miracle", "thần dược", "đặc trị", "no side effect",
     "guaranteed", "instant cure", "chữa khỏi", "đặc hiệu", "bí quyết",
@@ -885,7 +860,6 @@ SUSPICIOUS_PATTERNS = [
 # ==========================================
 
 def run_claim_audit(text: str) -> list:
-    """Return list of suspicious phrases found in OCR text (case-insensitive)."""
     if not text:
         return []
     text_lower = text.lower()
@@ -897,35 +871,28 @@ def run_claim_audit(text: str) -> list:
 # ==========================================
 
 def get_credibility_score(match_type, external_data, lang="en"):
-    """
-    Returns (label, color, emoji, description) based on data source quality.
-    HIGH  = OpenFDA/DailyMed confirmed or Barcode exact match.
-    MEDIUM = Wikipedia or fuzzy OCR fallback.
-    LOW   = Unverified OCR only.
-    """
     s = MIL_STRINGS[lang]
     has_fda  = bool(external_data and (external_data.get("openfda") or external_data.get("dailymed")))
     has_wiki = bool(external_data and (external_data.get("wikipedia") or external_data.get("wikipedia_en")))
     if match_type in ("BARCODE", "NDC_MATCH") or has_fda:
-        return s["cred_high"], "#16a34a", "🟢", s["cred_high_desc"]
+        return s["cred_high"], "#20B26C", "🟢", s["cred_high_desc"]
     elif match_type in ("FUZZY_OCR", "RXNORM_MATCH") and (has_wiki or has_fda):
-        return s["cred_med"], "#ca8a04", "🟡", s["cred_med_desc"]
+        return s["cred_med"], "#D97706", "🟡", s["cred_med_desc"]
     elif match_type == "RXNORM_MATCH":
-        return s["cred_med"], "#ca8a04", "🟡", s["cred_med_desc"]
+        return s["cred_med"], "#D97706", "🟡", s["cred_med_desc"]
     else:
-        return s["cred_low"], "#dc2626", "🔴", s["cred_low_desc"]
+        return s["cred_low"], "#DC2626", "🔴", s["cred_low_desc"]
 
 
 def render_credibility_badge(match_type, external_data, lang="en"):
-    """Render an inline credibility score badge."""
     s = MIL_STRINGS[lang]
     label, color, emoji, desc = get_credibility_score(match_type, external_data, lang)
     html = (
-        f'<div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.7);'
-        f'border:1px solid {color};border-radius:9999px;padding:5px 14px;margin:0.5rem 0;">'
+        f'<div style="display:inline-flex;align-items:center;gap:8px;background:#FFFFFF;'
+        f'border:1px solid {color};border-radius:9999px;padding:6px 16px;margin:0.75rem 0;box-shadow:0 2px 8px rgba(0,0,0,0.04);">'
         f'<span style="font-size:1rem;">{emoji}</span>'
-        f'<span style="font-weight:700;color:{color};font-size:0.85rem;">{s["cred_label"]}: {label}</span>'
-        f'<span style="color:#64748B;font-size:0.78rem;"> — {desc}</span>'
+        f'<span style="font-weight:700;color:{color};font-size:0.88rem;">{s["cred_label"]}: {label}</span>'
+        f'<span style="color:#64748B;font-size:0.8rem;"> — {desc}</span>'
         f'</div>'
     )
     st.markdown(html, unsafe_allow_html=True)
@@ -937,7 +904,6 @@ def render_credibility_badge(match_type, external_data, lang="en"):
 
 @st.cache_data(ttl=3600)
 def check_fda_recall(keyword: str):
-    """Query FDA enforcement API for recall notices. Returns first result dict or None."""
     if not keyword or len(keyword.strip()) < 3:
         return None
     kw = keyword.strip().replace('"', '')
@@ -961,7 +927,6 @@ def check_fda_recall(keyword: str):
 
 
 def render_recall_alert(keyword: str, lang="en"):
-    """Check and display FDA recall notice if found."""
     if not keyword:
         return
     s = MIL_STRINGS[lang]
@@ -980,7 +945,6 @@ def render_recall_alert(keyword: str, lang="en"):
 # ==========================================
 
 def render_cross_check_table(matched_med, ocr_text, external_data, lang="en"):
-    """Render a compact OCR vs Official API vs Verification Status comparison table."""
     s = MIL_STRINGS[lang]
     openfda = external_data.get("openfda") if external_data else None
     ocr_snip = (ocr_text[:60] + "...") if ocr_text and len(ocr_text) > 60 else (ocr_text or "—")
@@ -1012,14 +976,27 @@ def render_cross_check_table(matched_med, ocr_text, external_data, lang="en"):
 
 
 # ==========================================
-# MIL FEATURE 5 — EDUCATIONAL GUIDE
+# MIL FEATURE 5 — EDUCATIONAL GUIDE & DISCLAIMER
 # ==========================================
 
 def render_mil_guide(lang="en"):
-    """Collapsible MIL guide explaining how to spot fake/unverified medicines."""
     s = MIL_STRINGS[lang]
     with st.expander(s["guide_title"], expanded=False):
         st.markdown(s["guide_body"])
+
+
+def render_disclaimer_banner(lang="en"):
+    """Renders the Light Cream/Amber Disclaimer Bar matching the reference image."""
+    s = MIL_STRINGS[lang]
+    html = f"""
+    <div class="disclaimer-banner">
+        <div class="disclaimer-icon">⚠️</div>
+        <div class="disclaimer-text">
+            <strong>{s['disclaimer_title']}</strong> {s['disclaimer_body']}
+        </div>
+    </div>
+    """
+    render_html_safely(html)
 
 
 # ==========================================
@@ -1027,7 +1004,6 @@ def render_mil_guide(lang="en"):
 # ==========================================
 
 def standardize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    """Standardizes columns, data types, and keyword lists in the DataFrame."""
     if df is None or df.empty:
         return pd.DataFrame(columns=REQUIRED_COLUMNS)
 
@@ -1062,9 +1038,6 @@ def standardize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 @st.cache_data(ttl=3600)
 def load_medicine_database(source_url: str = None):
-    """
-    Load medicine records dynamically with a 1-hour cache TTL (ttl=3600).
-    """
     df = None
     source_name = "Local File"
     status_msg = "Loaded successfully from local database.json"
@@ -1131,7 +1104,6 @@ def load_medicine_database(source_url: str = None):
 
 @st.cache_resource
 def get_ocr_reader():
-    """Cache and initialize EasyOCR reader instance."""
     if EASYOCR_AVAILABLE:
         try:
             return easyocr.Reader(['en'], gpu=False)
@@ -1146,13 +1118,6 @@ def get_ocr_reader():
 # ==========================================
 
 def scan_barcode(image: Image.Image):
-    """
-    Detects 1D Barcodes and 2D QR Codes using OpenCV built-in detectors:
-      1. cv2.barcode.BarcodeDetector() for 1D barcodes.
-      2. cv2.QRCodeDetector() for QR codes.
-
-    Completely removes pyzbar/zbar dependencies.
-    """
     img_np = np.array(image.convert('RGB'))
     gray = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
     
@@ -1160,7 +1125,6 @@ def scan_barcode(image: Image.Image):
     draw_img = image.convert('RGB').copy()
     draw = ImageDraw.Draw(draw_img)
 
-    # 1. 1D Barcode Detection via OpenCV cv2.barcode.BarcodeDetector
     if hasattr(cv2, "barcode") and hasattr(cv2.barcode, "BarcodeDetector"):
         try:
             barcode_detector = cv2.barcode.BarcodeDetector()
@@ -1182,12 +1146,11 @@ def scan_barcode(image: Image.Image):
                     if info_str:
                         b_type = str(decoded_type[i]) if i < len(decoded_type) and decoded_type[i] else "BARCODE"
                         
-                        # Draw bounding line polygons if points array available
                         if points is not None and i < len(points):
                             pts_curr = points[i]
                             pts_list = [(int(p[0]), int(p[1])) for p in pts_curr]
                             pts_list.append(pts_list[0])
-                            draw.line(pts_list, fill='#00FF66', width=4)
+                            draw.line(pts_list, fill='#20B26C', width=4)
 
                         barcodes_found.append({
                             'data': info_str,
@@ -1197,7 +1160,6 @@ def scan_barcode(image: Image.Image):
         except Exception:
             pass
 
-    # 2. 2D QR Code Detection via OpenCV cv2.QRCodeDetector
     if hasattr(cv2, "QRCodeDetector"):
         try:
             qr_detector = cv2.QRCodeDetector()
@@ -1210,7 +1172,7 @@ def scan_barcode(image: Image.Image):
                             pts_curr = points[i]
                             pts_list = [(int(p[0]), int(p[1])) for p in pts_curr]
                             pts_list.append(pts_list[0])
-                            draw.line(pts_list, fill='#00FF66', width=4)
+                            draw.line(pts_list, fill='#20B26C', width=4)
 
                         barcodes_found.append({
                             'data': info_str,
@@ -1227,7 +1189,7 @@ def scan_barcode(image: Image.Image):
                             pts_curr = points[0] if points.ndim == 3 else points
                             pts_list = [(int(p[0]), int(p[1])) for p in pts_curr]
                             pts_list.append(pts_list[0])
-                            draw.line(pts_list, fill='#00FF66', width=4)
+                            draw.line(pts_list, fill='#20B26C', width=4)
 
                         barcodes_found.append({
                             'data': info_clean,
@@ -1241,42 +1203,19 @@ def scan_barcode(image: Image.Image):
 
 
 def preprocess_image_for_ocr(image: Image.Image) -> np.ndarray:
-    """
-    Lightweight, no-API image enhancement pipeline to improve OCR accuracy on
-    real-world medicine photos (glare, low contrast, uneven lighting, slight blur).
-    Pure OpenCV — no external service, so it never affects recognition coverage
-    from the API side, only how cleanly EasyOCR can read the text.
-
-    Steps: grayscale -> CLAHE local contrast boost -> denoise -> mild sharpen.
-    """
     img_np = np.array(image.convert('RGB'))
     gray = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
 
-    # CLAHE boosts local contrast — helps faded print / uneven lighting / glare
     clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
     contrasted = clahe.apply(gray)
-
-    # Denoise while preserving edges — helps blurry or compressed camera photos
     denoised = cv2.fastNlMeansDenoising(contrasted, h=10)
-
-    # Mild sharpening kernel to counter slight camera blur
     sharpen_kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
     sharpened = cv2.filter2D(denoised, -1, sharpen_kernel)
 
-    # EasyOCR expects a 3-channel image
     return cv2.cvtColor(sharpened, cv2.COLOR_GRAY2RGB)
 
 
 def scan_ocr_text(image: Image.Image):
-    """
-    Option B: Extract text using EasyOCR.
-
-    Runs OCR on the original image first. If that pass returns too few
-    confident tokens (a sign of glare/blur/low contrast — common with phone
-    photos of medicine boxes), automatically retries once on an enhanced
-    version of the same image and keeps whichever pass found more confident
-    text. This adds at most one extra OCR pass, only when needed.
-    """
     reader = get_ocr_reader()
     if not reader:
         return "", [], image
@@ -1290,7 +1229,6 @@ def scan_ocr_text(image: Image.Image):
 
     results, good_results = run_ocr(img_np)
 
-    # Fallback pass on enhanced image, only if the raw pass looks weak
     if len(good_results) < 2:
         try:
             enhanced_np = preprocess_image_for_ocr(image)
@@ -1298,7 +1236,7 @@ def scan_ocr_text(image: Image.Image):
             if len(enhanced_good) > len(good_results):
                 results, good_results = enhanced_results, enhanced_good
         except Exception:
-            pass  # preprocessing is best-effort; never block OCR on failure
+            pass
 
     extracted_tokens = []
     draw_img = image.convert('RGB').copy()
@@ -1309,24 +1247,20 @@ def scan_ocr_text(image: Image.Image):
             extracted_tokens.append(text)
             pts = [(int(p[0]), int(p[1])) for p in bbox]
             pts.append(pts[0])
-            draw.line(pts, fill='#38BDF8', width=2)
+            draw.line(pts, fill='#0284C7', width=2)
             
     raw_text_combined = " ".join(extracted_tokens)
     return raw_text_combined, results, draw_img
 
 
 # ==========================================
-# VERIFIED DATABASE MATCHING ENGINE (DATAFRAME)
+# VERIFIED DATABASE MATCHING ENGINE
 # ==========================================
 
 def match_medicine(barcodes: list, ocr_text: str, database_df: pd.DataFrame, fuzzy_threshold: int = 65):
-    """
-    Deterministic & Safe Matching Engine over standardized Pandas DataFrame.
-    """
     if database_df is None or database_df.empty:
         return None, None, 0, "Medical Database is empty."
 
-    # 1. Primary Exact Barcode Match
     for b in barcodes:
         code_str = str(b['data']).strip()
         matched_rows = database_df[database_df['barcode'] == code_str]
@@ -1334,7 +1268,6 @@ def match_medicine(barcodes: list, ocr_text: str, database_df: pd.DataFrame, fuz
             med_dict = matched_rows.iloc[0].to_dict()
             return med_dict, "BARCODE", 100, f"Exact Barcode Match ({b['type']}: {code_str})"
 
-    # 2. Secondary Fuzzy OCR Text Match
     if not THEFUZZ_AVAILABLE or not ocr_text.strip():
         return None, None, 0, "No Barcode matched and OCR text was empty or fuzzy engine unavailable."
 
@@ -1385,30 +1318,18 @@ def match_medicine(barcodes: list, ocr_text: str, database_df: pd.DataFrame, fuz
 
 
 def match_medicine_extended(barcodes: list, ocr_text: str, database_df: pd.DataFrame, fuzzy_threshold: int = 65):
-    """
-    Extended 4-tier matching pipeline to maximize recognition coverage:
-      1. Local exact Barcode match        (match_medicine — BARCODE)
-      2. Local fuzzy OCR match            (match_medicine — FUZZY_OCR)
-      3. FDA NDC Directory barcode lookup (NEW — NDC_MATCH)   [when 1 & 2 fail]
-      4. RxNav approximate name lookup    (NEW — RXNORM_MATCH) [when 1, 2 & 3 fail]
-
-    Tiers 1-2 stay fully local/deterministic (no network). Tiers 3-4 only fire
-    as a fallback, so the local verified database always takes priority.
-    """
     med, mtype, conf, reason = match_medicine(barcodes, ocr_text, database_df, fuzzy_threshold)
     if med:
         return med, mtype, conf, reason
 
-    # --- Tier 3: FDA NDC Directory fallback (via scanned barcode) ---
     for b in barcodes:
         ndc_med = lookup_ndc_by_barcode(b['data'])
         if ndc_med:
             return ndc_med, "NDC_MATCH", 90, f"FDA NDC Directory Match (Barcode: {b['data']})"
 
-    # --- Tier 4: RxNorm approximate name fallback (via OCR tokens) ---
     if ocr_text and ocr_text.strip():
         words = [w for w in ocr_text.split() if len(w) >= 4 and w.isalpha()]
-        for w in words[:5]:  # cap lookups to avoid excessive requests per scan
+        for w in words[:5]:
             approx = lookup_rxnorm_approximate(w)
             if approx:
                 synth_med = {
@@ -1433,7 +1354,6 @@ def match_medicine_extended(barcodes: list, ocr_text: str, database_df: pd.DataF
 # ==========================================
 
 def main():
-    # --- Splash / Intro Screen (shown once per browser session) ---
     if "splash_shown" not in st.session_state:
         st.session_state["splash_shown"] = False
 
@@ -1445,46 +1365,35 @@ def main():
                     <div class="splash-logo">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 2L4 5v6c0 5.25 3.4 9.74 8 11 4.6-1.26 8-5.75 8-11V5l-8-3z"
-                                  stroke="#16A34A" stroke-width="1.5" stroke-linejoin="round" fill="rgba(22,163,74,0.08)"/>
-                            <rect x="8.5" y="9.5" width="7" height="4" rx="2" transform="rotate(45 12 11.5)"
-                                  stroke="#16A34A" stroke-width="1.4" fill="none"/>
-                            <line x1="10.6" y1="9.6" x2="13.4" y2="13.4" stroke="#16A34A" stroke-width="1.4"/>
+                                  stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round" fill="none"/>
+                            <path d="M12 8v8M8 12h8" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
                         </svg>
                     </div>
                     <div class="splash-title">MedGuard</div>
-                    <div class="splash-subtitle">Verified Medicine Verification</div>
+                    <div class="splash-subtitle">Start your journey to verified medicine safety</div>
                 </div>
             """).strip(), unsafe_allow_html=True)
-        time.sleep(1.9)  # matches the .splash-screen CSS animation duration
+        time.sleep(1.9)
         splash_placeholder.empty()
         st.session_state["splash_shown"] = True
 
-    # Header Banner
+    # Header Banner - Matching Reference Theme
     st.markdown(textwrap.dedent("""
         <div class="header-container">
             <div class="header-content">
-                <div class="header-icon">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2L4 5v6c0 5.25 3.4 9.74 8 11 4.6-1.26 8-5.75 8-11V5l-8-3z"
-                              stroke="#16A34A" stroke-width="1.5" stroke-linejoin="round" fill="rgba(22,163,74,0.08)"/>
-                        <rect x="8.5" y="9.5" width="7" height="4" rx="2" transform="rotate(45 12 11.5)"
-                              stroke="#16A34A" stroke-width="1.4" fill="none"/>
-                        <line x1="10.6" y1="9.6" x2="13.4" y2="13.4" stroke="#16A34A" stroke-width="1.4"/>
-                    </svg>
+                <div class="header-badge">
+                    🌱 Science Health · Quality Living
                 </div>
-                <div>
-                    <div class="header-title">
-                        MedGuard
-                    </div>
-                    <div class="header-subtitle">
-                        Scan medicine packaging via OpenCV Barcode/QR Detector or Label Text OCR with OpenFDA live API integration.
-                    </div>
+                <div class="header-title">
+                    MedGuard Medicine Verification
+                </div>
+                <div class="header-subtitle">
+                    Bringing together scientific medicine knowledge, we offer instant verification, barcode recognition, and official OpenFDA live label lookup to protect your health every day.
                 </div>
             </div>
         </div>
     """).strip(), unsafe_allow_html=True)
 
-    # ── Language Selector ──────────────────────────────────────────────
     if "lang" not in st.session_state:
         st.session_state["lang"] = "en"
 
@@ -1532,7 +1441,6 @@ def main():
         st.divider()
         st.header("⚙️ Engine Status")
         
-        # Display OpenCV Barcode Engine Status
         st.success("✅ **OpenCV Barcode Engine**: Ready")
 
         if EASYOCR_AVAILABLE:
@@ -1550,16 +1458,9 @@ def main():
         st.divider()
         st.header("📚 Active Dataset")
         st.metric("Indexed Medicines", len(database_df))
-        
-        st.markdown("""
-        **Safety Rules & Guarantees:**
-        - 🔒 **Zero Generative AI**: Verified database & official OpenFDA records only.
-        - ⚡ **OpenCV Powered**: Built-in 1D & 2D QR Barcode detection without external zbar DLL dependencies.
-        - 🛡️ **Unknown Alert**: Instant warning for unverified packaging.
-        """)
 
         st.divider()
-        st.caption("MedGuard v1.3 • Streamlit + OpenCV + EasyOCR + OpenFDA")
+        st.caption("MedGuard v1.3 • Healthy Mint Light Theme")
 
     # Main Tabs
     tab_scan, tab_camera, tab_search = st.tabs([
@@ -1749,16 +1650,17 @@ def main():
         with st.expander("📊 View Standardized Pandas DataFrame Table"):
             st.dataframe(database_df, use_container_width=True)
 
+    # ----------------------------------------------------
+    # ALWAYS RENDER MEDICAL DISCLAIMER AT BOTTOM
+    # ----------------------------------------------------
+    render_disclaimer_banner(lang=lang)
+
 
 # ==========================================
 # RENDER VERIFICATION RESULTS UI
 # ==========================================
 
 def render_verification_results(matched_med, match_type, confidence, match_reason, barcodes, ocr_text, external_data=None, lang="en"):
-    """
-    Renders structured medical details if matched, or an 'Unknown Medicine' warning if unmatched,
-    plus OpenFDA and other API live results if found.
-    """
     if matched_med:
         badge_by_type = {
             "BARCODE": f'<span class="badge-barcode">MATCH TYPE: EXACT BARCODE ({confidence}%)</span>',
@@ -1773,17 +1675,17 @@ def render_verification_results(matched_med, match_type, confidence, match_reaso
         html = f"""
         <div class="verified-card">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="color: #15803D; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                <span style="color: #20B26C; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
                     <svg class="section-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2L4 5v6c0 5.25 3.4 9.74 8 11 4.6-1.26 8-5.75 8-11V5l-8-3z" stroke="#15803D" stroke-width="1.6" stroke-linejoin="round"/>
-                        <path d="M8.5 12l2.3 2.3L15.5 9.5" stroke="#15803D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 2L4 5v6c0 5.25 3.4 9.74 8 11 4.6-1.26 8-5.75 8-11V5l-8-3z" stroke="#20B26C" stroke-width="1.8" stroke-linejoin="round"/>
+                        <path d="M8.5 12l2.3 2.3L15.5 9.5" stroke="#20B26C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     VERIFIED DATABASE RECORD
                 </span>
                 {badge_html}
             </div>
             <div class="med-title">{matched_med['drug_name']}</div>
-            <div style="font-size: 0.95rem; color: #6EE7B7; font-weight: 500; margin-bottom: 1rem;">
+            <div style="font-size: 0.95rem; color: #176B6B; font-weight: 600; margin-bottom: 1rem;">
                 Match Details: {match_reason}
             </div>
             <div class="field-label">🧪 Active Ingredient(s)</div>
@@ -1793,10 +1695,10 @@ def render_verification_results(matched_med, match_type, confidence, match_reaso
             <div class="field-label">🎯 Primary Uses &amp; Indications</div>
             <div class="field-value">{matched_med['uses']}</div>
             <div class="field-label">⚠️ Contraindications &amp; Safety Warnings</div>
-            <div class="field-value" style="border-left: 4px solid #F59E0B; background: rgba(245, 158, 11, 0.1);">
+            <div class="field-value" style="border-left: 4px solid #D97706; background: #FFFBEB;">
                 {matched_med['contraindications']}
             </div>
-            <div style="margin-top: 1rem; font-size: 0.85rem; color: #9CA3AF;">
+            <div style="margin-top: 1rem; font-size: 0.85rem; color: #64748B;">
                 <strong>Verified Barcode:</strong> <code>{matched_med['barcode']}</code> | <strong>Keywords:</strong> <code>{kw_str}</code>
             </div>
         </div>
@@ -1806,15 +1708,15 @@ def render_verification_results(matched_med, match_type, confidence, match_reaso
     else:
         html = """
         <div class="warning-card">
-            <div style="font-weight: 700; font-size: 1.25rem; color: #B91C1C; display: flex; align-items: center; gap: 8px;">
+            <div style="font-weight: 800; font-size: 1.25rem; color: #B91C1C; display: flex; align-items: center; gap: 8px;">
                 <svg class="section-icon" style="width:22px;height:22px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 3L2 20h20L12 3z" stroke="#B91C1C" stroke-width="1.6" stroke-linejoin="round"/>
-                    <line x1="12" y1="9.5" x2="12" y2="14" stroke="#B91C1C" stroke-width="1.6" stroke-linecap="round"/>
+                    <path d="M12 3L2 20h20L12 3z" stroke="#B91C1C" stroke-width="1.8" stroke-linejoin="round"/>
+                    <line x1="12" y1="9.5" x2="12" y2="14" stroke="#B91C1C" stroke-width="1.8" stroke-linecap="round"/>
                     <circle cx="12" cy="17" r="0.9" fill="#B91C1C"/>
                 </svg>
-                UNKNOWN MEDICINE - NOT FOUND IN LOCAL/REMOTE DATABASE
+                UNKNOWN MEDICINE - NOT FOUND IN DATABASE
             </div>
-            <p style="margin-top: 0.5rem; font-size: 0.95rem; color: #FECACA;">
+            <p style="margin-top: 0.5rem; font-size: 0.95rem; color: #7F1D1D;">
                 No matching barcode or active ingredient was found in the verified medical database.
             </p>
         </div>
@@ -1837,7 +1739,7 @@ def render_verification_results(matched_med, match_type, confidence, match_reaso
             else:
                 st.info("No readable text extracted by OCR.")
 
-    # --- MIL Feature 1: Claim Audit ---
+    # MIL Feature 1: Claim Audit
     if ocr_text and ocr_text.strip():
         flagged = run_claim_audit(ocr_text)
         if flagged:
@@ -1848,10 +1750,10 @@ def render_verification_results(matched_med, match_type, confidence, match_reaso
                 + s["claim_audit_body"].format(phrases=phrases_str)
             )
 
-    # --- MIL Feature 2: Credibility Score Badge ---
+    # MIL Feature 2: Credibility Score Badge
     render_credibility_badge(match_type, external_data, lang=lang)
 
-    # --- MIL Feature 3: Recall Alert ---
+    # MIL Feature 3: Recall Alert
     recall_kw = ""
     if matched_med and matched_med.get("drug_name"):
         recall_kw = matched_med["drug_name"].split("/")[0].split()[0]
@@ -1859,35 +1761,34 @@ def render_verification_results(matched_med, match_type, confidence, match_reaso
         recall_kw = barcodes[0]["data"][:30]
     render_recall_alert(recall_kw, lang=lang)
 
-    # --- MIL Feature 4: Cross-Check Table ---
+    # MIL Feature 4: Cross-Check Table
     if matched_med or (external_data and external_data.get("openfda")):
         render_cross_check_table(matched_med, ocr_text, external_data, lang=lang)
 
     if external_data:
         render_external_data_cards(external_data)
 
-    # --- MIL Feature 5: Educational Guide ---
+    # MIL Feature 5: Educational Guide
     render_mil_guide(lang=lang)
 
 
 def render_rxnav_card(rxnav_data):
-    """Renders the RxNav API drug identifiers card."""
     if not rxnav_data:
         return
 
-    badges = "".join([f'<span style="background-color: #F3E8FF; color: #7E22CE; font-size: 0.85rem; padding: 4px 10px; border-radius: 6px; font-weight: 600; border: 1px solid #D8B4FE; margin-right: 6px; display: inline-block; margin-bottom: 6px;">CUI: {cui}</span>' for cui in rxnav_data])
+    badges = "".join([f'<span style="background-color: #F3E8FF; color: #7E22CE; font-size: 0.85rem; padding: 4px 12px; border-radius: 9999px; font-weight: 700; border: 1px solid #E9D5FF; margin-right: 6px; display: inline-block; margin-bottom: 6px;">CUI: {cui}</span>' for cui in rxnav_data])
 
     html = f"""
-    <div style="background: linear-gradient(145deg, #FAF5FF 0%, #F3E8FF 100%); border: 1px solid #D8B4FE; border-radius: 16px; padding: 1.5rem; color: #581C87; margin-top: 1.25rem; box-shadow: 0 10px 20px rgba(168, 85, 247, 0.08);">
+    <div style="background: linear-gradient(145deg, #FAF5FF 0%, #F3E8FF 100%); border: 1.5px solid #E9D5FF; border-radius: 18px; padding: 1.5rem; color: #581C87; margin-top: 1.25rem; box-shadow: 0 10px 24px rgba(168, 85, 247, 0.08);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-            <span style="color: #7E22CE; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+            <span style="color: #7E22CE; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
                 🧬 RXNAV RXNORM DRUG LOOKUP
             </span>
-            <span style="background-color: #7E22CE; color: white; font-size: 0.75rem; padding: 3px 10px; border-radius: 9999px; font-weight: 600;">
+            <span style="background-color: #7E22CE; color: white; font-size: 0.75rem; padding: 4px 12px; border-radius: 9999px; font-weight: 700;">
                 NLM API
             </span>
         </div>
-        <div style="font-weight: 600; text-transform: uppercase; font-size: 0.75rem; color: #7E22CE; margin-bottom: 0.5rem;">
+        <div style="font-weight: 700; text-transform: uppercase; font-size: 0.75rem; color: #7E22CE; margin-bottom: 0.5rem;">
             RxNorm Concept Unique Identifiers (RxCUI)
         </div>
         <div>
@@ -1899,20 +1800,19 @@ def render_rxnav_card(rxnav_data):
 
 
 def render_dailymed_card(dailymed_data):
-    """Renders the DailyMed package inserts card."""
     if not dailymed_data:
         return
 
     links_html = ""
-    for item in dailymed_data[:5]:  # Show top 5 records
+    for item in dailymed_data[:5]:
         links_html += f"""
-        <div style="margin-bottom: 0.75rem; padding: 0.6rem 0.8rem; background: rgba(255, 255, 255, 0.7); border-radius: 8px; border: 1px solid rgba(22, 163, 74, 0.15);">
-            <div style="font-weight: 600; font-size: 0.95rem; color: #14532D;">{item['title']}</div>
+        <div style="margin-bottom: 0.75rem; padding: 0.7rem 0.9rem; background: #FFFFFF; border-radius: 10px; border: 1px solid #D1EBE3;">
+            <div style="font-weight: 700; font-size: 0.95rem; color: #176B6B;">{item['title']}</div>
             <div style="font-size: 0.8rem; color: #4B5563; margin-top: 0.25rem;">
-                SPL ID: <code style="color: #15803D;">{item['spl_id']}</code>
+                SPL ID: <code style="color: #20B26C;">{item['spl_id']}</code>
             </div>
             <div style="margin-top: 0.4rem;">
-                <a href="{item['link']}" target="_blank" style="color: #15803D; font-weight: 600; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px;">
+                <a href="{item['link']}" target="_blank" style="color: #20B26C; font-weight: 700; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px;">
                     🔗 View Official Package Insert &rarr;
                 </a>
             </div>
@@ -1920,16 +1820,16 @@ def render_dailymed_card(dailymed_data):
         """
 
     html = f"""
-    <div style="background: linear-gradient(145deg, #F0FDF4 0%, #DCFCE7 100%); border: 1px solid #4ADE80; border-radius: 16px; padding: 1.5rem; color: #14532D; margin-top: 1.25rem; box-shadow: 0 10px 20px rgba(22, 163, 74, 0.08);">
+    <div style="background: linear-gradient(145deg, #FFFFFF 0%, #F0FAF7 100%); border: 1.5px solid #20B26C; border-radius: 18px; padding: 1.5rem; color: #135253; margin-top: 1.25rem; box-shadow: 0 10px 24px rgba(32, 178, 108, 0.08);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-            <span style="color: #15803D; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+            <span style="color: #176B6B; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
                 📦 DAILYMED OFFICIAL FDA LABELS
             </span>
-            <span style="background-color: #15803D; color: white; font-size: 0.75rem; padding: 3px 10px; border-radius: 9999px; font-weight: 600;">
+            <span style="background-color: #20B26C; color: white; font-size: 0.75rem; padding: 4px 12px; border-radius: 9999px; font-weight: 700;">
                 DAILYMED API
             </span>
         </div>
-        <div style="font-weight: 600; text-transform: uppercase; font-size: 0.75rem; color: #15803D; margin-bottom: 0.5rem;">
+        <div style="font-weight: 700; text-transform: uppercase; font-size: 0.75rem; color: #176B6B; margin-bottom: 0.5rem;">
             Package Inserts &amp; Product Details
         </div>
         {links_html}
@@ -1939,8 +1839,6 @@ def render_dailymed_card(dailymed_data):
 
 
 def render_wikipedia_card(wiki_data, lang: str = "vi"):
-    """Renders a Wikipedia summary card. `lang` controls the badge/title only —
-    pass the matching wiki_data (Vietnamese or English) for the language shown."""
     if not wiki_data:
         return
 
@@ -1948,19 +1846,19 @@ def render_wikipedia_card(wiki_data, lang: str = "vi"):
     icon = "📝" if lang == "vi" else "📄"
 
     html = f"""
-    <div style="background: linear-gradient(145deg, #F8FAFC 0%, #F1F5F9 100%); border: 1px solid #94A3B8; border-radius: 16px; padding: 1.5rem; color: #1E293B; margin-top: 1.25rem; box-shadow: 0 10px 20px rgba(100, 116, 139, 0.08);">
+    <div style="background: linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 100%); border: 1.5px solid #CBD5E1; border-radius: 18px; padding: 1.5rem; color: #1E293B; margin-top: 1.25rem; box-shadow: 0 10px 24px rgba(100, 116, 139, 0.08);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-            <span style="color: #334155; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+            <span style="color: #334155; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
                 {icon} {label}
             </span>
-            <span style="background-color: #475569; color: white; font-size: 0.75rem; padding: 3px 10px; border-radius: 9999px; font-weight: 600;">
+            <span style="background-color: #475569; color: white; font-size: 0.75rem; padding: 4px 12px; border-radius: 9999px; font-weight: 700;">
                 WIKIPEDIA API
             </span>
         </div>
-        <div style="font-size: 1.25rem; font-weight: 700; color: #0F172A; margin-bottom: 0.5rem;">
+        <div style="font-size: 1.25rem; font-weight: 800; color: #0F172A; margin-bottom: 0.5rem;">
             {wiki_data['title']}
         </div>
-        <div style="font-size: 0.95rem; line-height: 1.6; color: #334155; background: rgba(255,255,255,0.6); padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.05); text-align: justify;">
+        <div style="font-size: 0.95rem; line-height: 1.6; color: #334155; background: #FFFFFF; padding: 0.8rem; border-radius: 10px; border: 1px solid #E2E8F0; text-align: justify;">
             {wiki_data['extract']}
         </div>
     </div>
@@ -1969,52 +1867,51 @@ def render_wikipedia_card(wiki_data, lang: str = "vi"):
 
 
 def render_openfda_card(openfda_data):
-    """Renders the OpenFDA live API drug label card."""
     if not openfda_data:
         return
 
     html = f"""
-    <div style="background: linear-gradient(145deg, #F0F9FF 0%, #E0F2FE 100%); border: 1px solid #38BDF8; border-radius: 16px; padding: 1.5rem; color: #0C4A6E; margin-top: 1.25rem; box-shadow: 0 10px 20px rgba(56, 189, 248, 0.08);">
+    <div style="background: linear-gradient(145deg, #FFFFFF 0%, #E0F2FE 100%); border: 1.5px solid #38BDF8; border-radius: 18px; padding: 1.5rem; color: #0C4A6E; margin-top: 1.25rem; box-shadow: 0 10px 24px rgba(56, 189, 248, 0.08);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-            <span style="color: #0284C7; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+            <span style="color: #0284C7; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
                 🌐 OPENFDA PUBLIC DRUG LABEL MATCH
             </span>
-            <span style="background-color: #0284C7; color: white; font-size: 0.75rem; padding: 3px 10px; border-radius: 9999px; font-weight: 600;">
+            <span style="background-color: #0284C7; color: white; font-size: 0.75rem; padding: 4px 12px; border-radius: 9999px; font-weight: 700;">
                 LIVE FDA API
             </span>
         </div>
-        <div style="font-size: 1.5rem; font-weight: 700; color: #0C4A6E;">
+        <div style="font-size: 1.5rem; font-weight: 800; color: #0C4A6E;">
             {openfda_data['brand_name']}
             <span style="font-size: 1rem; color: #64748B; font-weight: 400;">{f"({openfda_data['generic_name']})" if openfda_data.get('generic_name') else ""}</span>
         </div>
-        <div style="font-weight: 600; text-transform: uppercase; font-size: 0.75rem; color: #0369A1; margin-top: 1rem; margin-bottom: 0.25rem;">
+        <div style="font-weight: 700; text-transform: uppercase; font-size: 0.75rem; color: #0369A1; margin-top: 1rem; margin-bottom: 0.25rem;">
             🧪 Active Ingredient(s)
         </div>
-        <div style="font-size: 0.95rem; background: rgba(255,255,255,0.65); padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px solid rgba(3,105,161,0.12);">
+        <div style="font-size: 0.95rem; background: #FFFFFF; padding: 0.7rem 0.9rem; border-radius: 8px; border: 1px solid #BAE6FD;">
             {openfda_data['active_ingredient']}
         </div>
-        <div style="font-weight: 600; text-transform: uppercase; font-size: 0.75rem; color: #0369A1; margin-top: 0.75rem; margin-bottom: 0.25rem;">
+        <div style="font-weight: 700; text-transform: uppercase; font-size: 0.75rem; color: #0369A1; margin-top: 0.75rem; margin-bottom: 0.25rem;">
             🎯 Indications &amp; Usage
         </div>
-        <div style="font-size: 0.95rem; background: rgba(255,255,255,0.65); padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px solid rgba(3,105,161,0.12);">
+        <div style="font-size: 0.95rem; background: #FFFFFF; padding: 0.7rem 0.9rem; border-radius: 8px; border: 1px solid #BAE6FD;">
             {openfda_data['usage']}
         </div>
-        <div style="font-weight: 600; text-transform: uppercase; font-size: 0.75rem; color: #0369A1; margin-top: 0.75rem; margin-bottom: 0.25rem;">
+        <div style="font-weight: 700; text-transform: uppercase; font-size: 0.75rem; color: #0369A1; margin-top: 0.75rem; margin-bottom: 0.25rem;">
             📋 Dosage &amp; Administration
         </div>
-        <div style="font-size: 0.95rem; background: rgba(255,255,255,0.65); padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px solid rgba(3,105,161,0.12);">
+        <div style="font-size: 0.95rem; background: #FFFFFF; padding: 0.7rem 0.9rem; border-radius: 8px; border: 1px solid #BAE6FD;">
             {openfda_data['dosage']}
         </div>
-        <div style="font-weight: 600; text-transform: uppercase; font-size: 0.75rem; color: #B91C1C; margin-top: 0.75rem; margin-bottom: 0.25rem;">
+        <div style="font-weight: 700; text-transform: uppercase; font-size: 0.75rem; color: #B91C1C; margin-top: 0.75rem; margin-bottom: 0.25rem;">
             ⚠️ FDA Warnings &amp; Precautions
         </div>
-        <div style="font-size: 0.95rem; background: rgba(239, 68, 68, 0.08); padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.2); color: #7F1D1D;">
+        <div style="font-size: 0.95rem; background: #FEF2F2; padding: 0.7rem 0.9rem; border-radius: 8px; border: 1px solid #FCA5A5; color: #7F1D1D;">
             {openfda_data['warnings']}
         </div>
-        {f'''<div style="font-weight: 600; text-transform: uppercase; font-size: 0.75rem; color: #C2410C; margin-top: 0.75rem; margin-bottom: 0.25rem;">
+        {f'''<div style="font-weight: 700; text-transform: uppercase; font-size: 0.75rem; color: #C2410C; margin-top: 0.75rem; margin-bottom: 0.25rem;">
             💊 Drug Interactions (Official FDA Label)
         </div>
-        <div style="font-size: 0.95rem; background: rgba(249, 115, 22, 0.08); padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px solid rgba(249, 115, 22, 0.25); color: #9A3412;">
+        <div style="font-size: 0.95rem; background: #FFEDD5; padding: 0.7rem 0.9rem; border-radius: 8px; border: 1px solid #FDBA74; color: #9A3412;">
             {openfda_data['interactions']}
         </div>''' if openfda_data.get('interactions') else ''}
     </div>
@@ -2023,7 +1920,6 @@ def render_openfda_card(openfda_data):
 
 
 def render_external_data_cards(external_data):
-    """Renders the combined output of all external APIs in a clean 2-column layout."""
     if not external_data:
         return
 
@@ -2043,9 +1939,6 @@ def render_external_data_cards(external_data):
         if external_data.get("dailymed"):
             render_dailymed_card(external_data["dailymed"])
     with col2:
-        # Show only the Wikipedia card matching the app's current language
-        # toggle (🇬🇧/🇻🇳) — never both at once. If the selected language has
-        # no article, fall back to the other language rather than showing nothing.
         wiki_selected = external_data.get("wikipedia_en") if ui_lang == "en" else external_data.get("wikipedia")
         wiki_other = external_data.get("wikipedia") if ui_lang == "en" else external_data.get("wikipedia_en")
         other_lang = "vi" if ui_lang == "en" else "en"
