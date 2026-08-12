@@ -6,7 +6,7 @@ import time
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import requests
 import pandas as pd
 import cv2
@@ -61,28 +61,21 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ------------------------------------------------------------------
 # Custom-drawn, tileable medicine-themed background pattern.
-# Soft Teal/Mint lines matching the new color theme
-# ------------------------------------------------------------------
 _MED_BG_SVG = """<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'>
   <g fill='none' stroke='#20B26C' stroke-width='1.2' stroke-opacity='0.08'>
-    <!-- capsule -->
     <g transform='translate(20,25) rotate(35)'>
       <rect x='0' y='0' width='46' height='18' rx='9'/>
       <line x1='23' y1='0' x2='23' y2='18'/>
     </g>
-    <!-- round tablet with score line -->
     <circle cx='165' cy='45' r='16'/>
     <line x1='153' y1='45' x2='177' y2='45'/>
-    <!-- syringe -->
     <g transform='translate(120,120) rotate(-20)'>
       <rect x='0' y='0' width='34' height='10' rx='2'/>
       <line x1='34' y1='2.5' x2='44' y2='2.5'/>
       <line x1='34' y1='7.5' x2='44' y2='7.5'/>
       <line x1='0' y1='5' x2='-8' y2='5'/>
     </g>
-    <!-- medical cross -->
     <g transform='translate(35,150)'>
       <rect x='7' y='0' width='8' height='24' rx='2'/>
       <rect x='0' y='7' width='22' height='8' rx='2'/>
@@ -91,13 +84,8 @@ _MED_BG_SVG = """<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220
 </svg>"""
 _MED_BG_DATA_URI = "data:image/svg+xml," + urllib.parse.quote(_MED_BG_SVG)
 
-# ------------------------------------------------------------------
-# Updated Custom CSS matching "The Road to Health" Color Palette
-# Light Mint / Deep Teal / Warm Amber Disclaimer
-# ------------------------------------------------------------------
 _CSS_TEMPLATE = textwrap.dedent("""
     <style>
-        /* Global Styles & Font */
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
         html, body, [class*="css"] {
@@ -105,7 +93,6 @@ _CSS_TEMPLATE = textwrap.dedent("""
             color: #1F2937;
         }
 
-        /* Light Mint Gradient Background across the whole app */
         [data-testid="stAppViewContainer"] {
             background-color: #EBF8F5;
             background-image:
@@ -122,7 +109,6 @@ _CSS_TEMPLATE = textwrap.dedent("""
             border-right: 1px solid #D1EBE3;
         }
 
-        /* App Header Banner */
         .header-container {
             position: relative;
             background: linear-gradient(135deg, #FFFFFF 0%, #EBF8F5 55%, #D6F5EC 100%);
@@ -167,23 +153,6 @@ _CSS_TEMPLATE = textwrap.dedent("""
             border-radius: 9999px;
             border: 1px solid #A3E4D1;
         }
-        .header-icon {
-            flex-shrink: 0;
-            width: 58px;
-            height: 58px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #20B26C;
-            border-radius: 16px;
-            box-shadow: 0 8px 16px rgba(32, 178, 108, 0.25);
-            margin-bottom: 0.5rem;
-        }
-        .header-icon svg {
-            width: 32px;
-            height: 32px;
-            stroke: #FFFFFF;
-        }
         .header-title {
             font-size: 2.5rem;
             font-weight: 800;
@@ -207,7 +176,6 @@ _CSS_TEMPLATE = textwrap.dedent("""
             opacity: 0.9;
         }
 
-        /* Badges */
         .badge-barcode {
             background-color: #E0F2FE;
             color: #0369A1;
@@ -243,7 +211,6 @@ _CSS_TEMPLATE = textwrap.dedent("""
             font-weight: 700;
         }
 
-        /* Result Card Styles */
         .verified-card {
             background: linear-gradient(145deg, #FFFFFF 0%, #F0FAF7 100%);
             border: 1.5px solid #20B26C;
@@ -287,7 +254,6 @@ _CSS_TEMPLATE = textwrap.dedent("""
             border: 1px solid #D1EBE3;
         }
 
-        /* Warm Cream / Amber Medical Disclaimer Banner (Matching Image Footer) */
         .disclaimer-banner {
             background-color: #FFFBEB;
             border: 1.5px solid #FDE68A;
@@ -314,7 +280,6 @@ _CSS_TEMPLATE = textwrap.dedent("""
             font-weight: 700;
         }
 
-        /* Code Box for Raw OCR */
         .raw-box {
             background-color: #F8FAFC;
             border: 1px solid #CBD5E1;
@@ -328,7 +293,6 @@ _CSS_TEMPLATE = textwrap.dedent("""
             overflow-y: auto;
         }
 
-        /* Splash / Intro Screen */
         .splash-screen {
             position: fixed;
             inset: 0;
@@ -389,16 +353,11 @@ st.markdown(
 
 
 # ==========================================
-# OPENFDA API INTEGRATION (CACHED WITH TTL=3600)
+# OPENFDA API INTEGRATION
 # ==========================================
 
 @st.cache_data(ttl=3600)
 def search_openfda(query: str):
-    """
-    Search OpenFDA Drug Label API (https://api.fda.gov/drug/label.json).
-    Parses and returns: Brand Name, Active Ingredient, Usage, Dosage, and Warnings.
-    Cached with @st.cache_data(ttl=3600) for fast execution.
-    """
     if not query or not str(query).strip():
         return None
 
@@ -444,28 +403,16 @@ def search_openfda(query: str):
         active_ingredient = str(active_ing).strip() if active_ing else "N/A"
 
     usage_list = item.get("indications_and_usage", item.get("purpose", []))
-    if isinstance(usage_list, list):
-        usage = " ".join([str(u).strip() for u in usage_list if str(u).strip()])
-    else:
-        usage = str(usage_list).strip()
+    usage = " ".join([str(u).strip() for u in usage_list if str(u).strip()]) if isinstance(usage_list, list) else str(usage_list).strip()
 
     dosage_list = item.get("dosage_and_administration", [])
-    if isinstance(dosage_list, list):
-        dosage = " ".join([str(d).strip() for d in dosage_list if str(d).strip()])
-    else:
-        dosage = str(dosage_list).strip()
+    dosage = " ".join([str(d).strip() for d in dosage_list if str(d).strip()]) if isinstance(dosage_list, list) else str(dosage_list).strip()
 
     warnings_list = item.get("warnings", item.get("warnings_and_cautions", []))
-    if isinstance(warnings_list, list):
-        warnings = " ".join([str(w).strip() for w in warnings_list if str(w).strip()])
-    else:
-        warnings = str(warnings_list).strip()
+    warnings = " ".join([str(w).strip() for w in warnings_list if str(w).strip()]) if isinstance(warnings_list, list) else str(warnings_list).strip()
 
     interactions_list = item.get("drug_interactions", [])
-    if isinstance(interactions_list, list):
-        interactions = " ".join([str(i).strip() for i in interactions_list if str(i).strip()])
-    else:
-        interactions = str(interactions_list).strip()
+    interactions = " ".join([str(i).strip() for i in interactions_list if str(i).strip()]) if isinstance(interactions_list, list) else str(interactions_list).strip()
 
     def format_text(val, default_msg="Not specified in OpenFDA label.", max_chars=350):
         if not val or val == "N/A":
@@ -488,11 +435,6 @@ def search_openfda(query: str):
 
 @st.cache_data(ttl=86400)
 def lookup_ndc_by_barcode(barcode: str):
-    """
-    TIER 1 FALLBACK — When a scanned barcode is not found in the local database,
-    query the FDA NDC (National Drug Code) Directory (api.fda.gov/drug/ndc.json).
-    Cached for 24 hours.
-    """
     if not barcode or not str(barcode).strip():
         return None
 
@@ -546,10 +488,6 @@ def lookup_ndc_by_barcode(barcode: str):
 
 @st.cache_data(ttl=86400)
 def lookup_rxnorm_approximate(term: str, max_entries: int = 1):
-    """
-    TIER 2 FALLBACK — Delegate to RxNav's approximate term matcher.
-    Cached for 24 hours.
-    """
     if not term or not str(term).strip():
         return None
     clean_term = str(term).strip()
@@ -589,7 +527,6 @@ def extract_generic_name(active_ingredient_str: str) -> str:
 
 @st.cache_data(ttl=86400)
 def lookup_rxnav(keyword: str):
-    """Search RxNav API. Cached for 24 hours."""
     if not keyword or not str(keyword).strip():
         return None
     clean_keyword = str(keyword).strip()
@@ -608,7 +545,6 @@ def lookup_rxnav(keyword: str):
 
 @st.cache_data(ttl=86400)
 def lookup_dailymed(keyword: str):
-    """Search DailyMed API. Cached for 24 hours."""
     if not keyword or not str(keyword).strip():
         return None
     clean_keyword = str(keyword).strip()
@@ -638,14 +574,11 @@ def lookup_dailymed(keyword: str):
 
 @st.cache_data(ttl=86400)
 def lookup_wikipedia_vietnam(keyword: str):
-    """Search Wikipedia Vietnam API. Cached for 24 hours."""
     if not keyword or not str(keyword).strip():
         return None
     clean_keyword = str(keyword).strip()
     url = f"https://vi.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&titles={urllib.parse.quote(clean_keyword)}&format=json"
-    headers = {
-        "User-Agent": "MedGuard/1.3 (contact@example.com) Python-requests/2.31"
-    }
+    headers = {"User-Agent": "MedGuard/1.3 (contact@example.com) Python-requests/2.31"}
     try:
         r = requests.get(url, headers=headers, timeout=5)
         if r.status_code == 200:
@@ -655,10 +588,7 @@ def lookup_wikipedia_vietnam(keyword: str):
                 if page_id != "-1":
                     extract = page_data.get("extract", "").strip()
                     if extract:
-                        return {
-                            "title": page_data.get("title", clean_keyword),
-                            "extract": extract
-                        }
+                        return {"title": page_data.get("title", clean_keyword), "extract": extract}
     except Exception:
         pass
     return None
@@ -666,14 +596,11 @@ def lookup_wikipedia_vietnam(keyword: str):
 
 @st.cache_data(ttl=86400)
 def lookup_wikipedia_english(keyword: str):
-    """Search Wikipedia English API. Cached for 24 hours."""
     if not keyword or not str(keyword).strip():
         return None
     clean_keyword = str(keyword).strip()
     url = f"https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&titles={urllib.parse.quote(clean_keyword)}&format=json"
-    headers = {
-        "User-Agent": "MedGuard/1.3 (contact@example.com) Python-requests/2.31"
-    }
+    headers = {"User-Agent": "MedGuard/1.3 (contact@example.com) Python-requests/2.31"}
     try:
         r = requests.get(url, headers=headers, timeout=5)
         if r.status_code == 200:
@@ -683,10 +610,7 @@ def lookup_wikipedia_english(keyword: str):
                 if page_id != "-1":
                     extract = page_data.get("extract", "").strip()
                     if extract:
-                        return {
-                            "title": page_data.get("title", clean_keyword),
-                            "extract": extract
-                        }
+                        return {"title": page_data.get("title", clean_keyword), "extract": extract}
     except Exception:
         pass
     return None
@@ -735,7 +659,7 @@ def fetch_all_external_apis(brand_query: str, generic_query: str):
 
 
 # ==========================================
-# MIL — BILINGUAL STRINGS (EN / VI)
+# MIL — BILINGUAL STRINGS & AUDIT
 # ==========================================
 
 MIL_STRINGS = {
@@ -776,19 +700,16 @@ MIL_STRINGS = {
         "guide_body": """
 **Step 1 — Check the Registration Code 📋**
 Vietnamese medicines must carry a valid registration number printed on the label:
-- `VD-XXXXX-XX` → Domestically produced medicine (manufactured in Vietnam)
-- `VS-XXXXX-XX` → Traditional / herbal product (Thuốc đông y / thảo dược)
-- `GC-XXXXX-XX` → Import permit (Giấy phép nhập khẩu — imported drug)
+- `VD-XXXXX-XX` → Domestically produced medicine
+- `VS-XXXXX-XX` → Traditional / herbal product
+- `GC-XXXXX-XX` → Import permit
 - `VN-XXXXX-XX` → Foreign-registered imported medicine
 
 **Step 2 — Verify the Barcode Origin 🔢**
-- Barcodes starting with **893** = Made in Vietnam
-- Barcodes starting with **000–019** = Made in USA
-- Barcodes starting with **400–440** = Made in Germany
-- Barcodes starting with **690–699** = Made in China
+- **893** = Made in Vietnam | **000–019** = Made in USA | **400–440** = Made in Germany | **690–699** = Made in China
 
 **Step 3 — Watch for Exaggerated Claims ⚠️**
-- "100% cure", "miracle drug" (thần dược), "no side effects" (không tác dụng phụ)
+- "100% cure", "miracle drug", "no side effects"
 
 **Step 4 — Cross-Check with Official Sources 🌐**
 - **OpenFDA**: [api.fda.gov](https://api.fda.gov) — U.S. FDA drug label database
@@ -855,20 +776,12 @@ SUSPICIOUS_PATTERNS = [
 ]
 
 
-# ==========================================
-# MIL FEATURE 1 — CLAIM AUDIT
-# ==========================================
-
 def run_claim_audit(text: str) -> list:
     if not text:
         return []
     text_lower = text.lower()
     return [p for p in SUSPICIOUS_PATTERNS if p.lower() in text_lower]
 
-
-# ==========================================
-# MIL FEATURE 2 — CREDIBILITY SCORE
-# ==========================================
 
 def get_credibility_score(match_type, external_data, lang="en"):
     s = MIL_STRINGS[lang]
@@ -897,10 +810,6 @@ def render_credibility_badge(match_type, external_data, lang="en"):
     )
     st.markdown(html, unsafe_allow_html=True)
 
-
-# ==========================================
-# MIL FEATURE 3 — RECALL ALERT
-# ==========================================
 
 @st.cache_data(ttl=3600)
 def check_fda_recall(keyword: str):
@@ -940,10 +849,6 @@ def render_recall_alert(keyword: str, lang="en"):
         )
 
 
-# ==========================================
-# MIL FEATURE 4 — CROSS-CHECK TABLE
-# ==========================================
-
 def render_cross_check_table(matched_med, ocr_text, external_data, lang="en"):
     s = MIL_STRINGS[lang]
     openfda = external_data.get("openfda") if external_data else None
@@ -975,10 +880,6 @@ def render_cross_check_table(matched_med, ocr_text, external_data, lang="en"):
         st.dataframe(pd.DataFrame(table_rows), use_container_width=True, hide_index=True)
 
 
-# ==========================================
-# MIL FEATURE 5 — EDUCATIONAL GUIDE & DISCLAIMER
-# ==========================================
-
 def render_mil_guide(lang="en"):
     s = MIL_STRINGS[lang]
     with st.expander(s["guide_title"], expanded=False):
@@ -986,7 +887,6 @@ def render_mil_guide(lang="en"):
 
 
 def render_disclaimer_banner(lang="en"):
-    """Renders the Light Cream/Amber Disclaimer Bar matching the reference image."""
     s = MIL_STRINGS[lang]
     html = f"""
     <div class="disclaimer-banner">
@@ -1000,7 +900,7 @@ def render_disclaimer_banner(lang="en"):
 
 
 # ==========================================
-# CACHED RESOURCE & DATA LOADERS (TTL = 3600s)
+# RESOURCE & DATA LOADERS
 # ==========================================
 
 def standardize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
@@ -1048,32 +948,26 @@ def load_medicine_database(source_url: str = None):
         try:
             if "docs.google.com/spreadsheets" in url:
                 if "/export" not in url:
-                    if "/edit" in url:
-                        url = url.split("/edit")[0] + "/export?format=csv"
-                    else:
-                        url = url.rstrip("/") + "/export?format=csv"
+                    url = url.split("/edit")[0] + "/export?format=csv" if "/edit" in url else url.rstrip("/") + "/export?format=csv"
 
             if "csv" in url.lower() or "export?format=csv" in url.lower():
                 response = requests.get(url, timeout=10)
                 response.raise_for_status()
                 df = pd.read_csv(io.StringIO(response.text))
                 source_name = "Remote CSV / Google Sheets"
-                status_msg = f"Successfully fetched live data from remote CSV."
+                status_msg = "Successfully fetched live data from remote CSV."
             else:
                 response = requests.get(url, timeout=10)
                 response.raise_for_status()
                 json_data = response.json()
                 
-                if isinstance(json_data, dict) and "medicines" in json_data:
-                    records = json_data["medicines"]
-                elif isinstance(json_data, list):
-                    records = json_data
-                else:
+                records = json_data.get("medicines", []) if isinstance(json_data, dict) else json_data
+                if not isinstance(records, list):
                     raise ValueError("JSON payload must be a list of objects or contain 'medicines' array.")
                 
                 df = pd.DataFrame(records)
                 source_name = "Remote JSON API"
-                status_msg = f"Successfully fetched live data from remote JSON API."
+                status_msg = "Successfully fetched live data from remote JSON API."
 
         except Exception as e:
             is_fallback = True
@@ -1114,7 +1008,7 @@ def get_ocr_reader():
 
 
 # ==========================================
-# OPENCV BARCODE & QR DETECTION ENGINES
+# OPENCV BARCODE & OCR DETECTION
 # ==========================================
 
 def scan_barcode(image: Image.Image):
@@ -1134,7 +1028,6 @@ def scan_barcode(image: Image.Image):
                 ok, decoded_info, decoded_type, points = res
             else:
                 decoded_info, decoded_type, points = res
-                ok = bool(decoded_info)
 
             if decoded_info:
                 if isinstance(decoded_info, str):
@@ -1152,18 +1045,14 @@ def scan_barcode(image: Image.Image):
                             pts_list.append(pts_list[0])
                             draw.line(pts_list, fill='#20B26C', width=4)
 
-                        barcodes_found.append({
-                            'data': info_str,
-                            'type': b_type,
-                            'rect': None
-                        })
+                        barcodes_found.append({'data': info_str, 'type': b_type, 'rect': None})
         except Exception:
             pass
 
     if hasattr(cv2, "QRCodeDetector"):
         try:
             qr_detector = cv2.QRCodeDetector()
-            retval, decoded_info, points, straight_qrcode = qr_detector.detectAndDecodeMulti(gray)
+            retval, decoded_info, points, _ = qr_detector.detectAndDecodeMulti(gray)
             if retval and decoded_info:
                 for i, info in enumerate(decoded_info):
                     info_str = str(info).strip()
@@ -1174,14 +1063,10 @@ def scan_barcode(image: Image.Image):
                             pts_list.append(pts_list[0])
                             draw.line(pts_list, fill='#20B26C', width=4)
 
-                        barcodes_found.append({
-                            'data': info_str,
-                            'type': 'QRCODE',
-                            'rect': None
-                        })
+                        barcodes_found.append({'data': info_str, 'type': 'QRCODE', 'rect': None})
         except Exception:
             try:
-                info_str, points, straight_qrcode = qr_detector.detectAndDecode(gray)
+                info_str, points, _ = qr_detector.detectAndDecode(gray)
                 if info_str and info_str.strip():
                     info_clean = info_str.strip()
                     if not any(b['data'] == info_clean for b in barcodes_found):
@@ -1191,11 +1076,7 @@ def scan_barcode(image: Image.Image):
                             pts_list.append(pts_list[0])
                             draw.line(pts_list, fill='#20B26C', width=4)
 
-                        barcodes_found.append({
-                            'data': info_clean,
-                            'type': 'QRCODE',
-                            'rect': None
-                        })
+                        barcodes_found.append({'data': info_clean, 'type': 'QRCODE', 'rect': None})
             except Exception:
                 pass
 
@@ -1254,7 +1135,7 @@ def scan_ocr_text(image: Image.Image):
 
 
 # ==========================================
-# VERIFIED DATABASE MATCHING ENGINE
+# DATABASE MATCHING ENGINE
 # ==========================================
 
 def match_medicine(barcodes: list, ocr_text: str, database_df: pd.DataFrame, fuzzy_threshold: int = 65):
@@ -1377,7 +1258,6 @@ def main():
         splash_placeholder.empty()
         st.session_state["splash_shown"] = True
 
-    # Header Banner - Matching Reference Theme
     st.markdown(textwrap.dedent("""
         <div class="header-container">
             <div class="header-content">
@@ -1397,7 +1277,6 @@ def main():
     if "lang" not in st.session_state:
         st.session_state["lang"] = "en"
 
-    # Sidebar
     with st.sidebar:
         st.markdown("### 🌍 Language / Ngôn ngữ")
         lang_choice = st.radio(
@@ -1436,11 +1315,10 @@ def main():
             else:
                 st.markdown(f'<span class="badge-source-local">SOURCE: {source_name}</span>', unsafe_allow_html=True)
 
-        st.caption(f"Cache TTL: 3600 seconds (1 hour)")
+        st.caption("Cache TTL: 3600 seconds (1 hour)")
 
         st.divider()
         st.header("⚙️ Engine Status")
-        
         st.success("✅ **OpenCV Barcode Engine**: Ready")
 
         if EASYOCR_AVAILABLE:
@@ -1462,16 +1340,13 @@ def main():
         st.divider()
         st.caption("MedGuard v1.3 • Healthy Mint Light Theme")
 
-    # Main Tabs
     tab_scan, tab_camera, tab_search = st.tabs([
         "🖼️ Scan Uploaded Image", 
         "📷 Live Camera Barcode", 
         "🔍 Manual Search & OpenFDA"
     ])
 
-    # ----------------------------------------------------
-    # TAB 1: UPLOAD & SCAN IMAGE
-    # ----------------------------------------------------
+    # TAB 1: UPLOAD & SCAN
     with tab_scan:
         st.subheader("Upload Packaging or Label Image")
         uploaded_file = st.file_uploader(
@@ -1534,9 +1409,7 @@ def main():
             except Exception as e:
                 st.error(f"❌ Error processing image: {e}")
 
-    # ----------------------------------------------------
-    # TAB 2: LIVE CAMERA BARCODE SCAN
-    # ----------------------------------------------------
+    # TAB 2: LIVE CAMERA SCAN
     with tab_camera:
         st.subheader("Take Photo with Camera")
         camera_img = st.camera_input("Position the medicine barcode or label in clear view:")
@@ -1602,9 +1475,7 @@ def main():
             except Exception as e:
                 st.error(f"❌ Camera processing error: {e}")
 
-    # ----------------------------------------------------
-    # TAB 3: MANUAL SEARCH & OPENFDA DIRECT LOOKUP
-    # ----------------------------------------------------
+    # TAB 3: MANUAL SEARCH
     with tab_search:
         st.subheader("🔍 Local Database & OpenFDA Live Search")
         
@@ -1636,7 +1507,7 @@ def main():
         st.caption(f"Showing {len(filtered_rows)} of {len(database_df)} dataset entries")
 
         for med in filtered_rows:
-            with st.expander(f"💊 **{med['drug_name']}** — Active Ingredient: *{med['active_ingredient']}*", expanded=True if search_query else False):
+            with st.expander(f"💊 **{med['drug_name']}** — Active Ingredient: *{med['active_ingredient']}*", expanded=bool(search_query)):
                 col_a, col_b = st.columns([1, 2])
                 with col_a:
                     st.markdown(f"**Barcode**: `{med['barcode']}`")
@@ -1650,14 +1521,11 @@ def main():
         with st.expander("📊 View Standardized Pandas DataFrame Table"):
             st.dataframe(database_df, use_container_width=True)
 
-    # ----------------------------------------------------
-    # ALWAYS RENDER MEDICAL DISCLAIMER AT BOTTOM
-    # ----------------------------------------------------
     render_disclaimer_banner(lang=lang)
 
 
 # ==========================================
-# RENDER VERIFICATION RESULTS UI
+# RENDER UI COMPONENTS
 # ==========================================
 
 def render_verification_results(matched_med, match_type, confidence, match_reason, barcodes, ocr_text, external_data=None, lang="en"):
@@ -1739,21 +1607,17 @@ def render_verification_results(matched_med, match_type, confidence, match_reaso
             else:
                 st.info("No readable text extracted by OCR.")
 
-    # MIL Feature 1: Claim Audit
     if ocr_text and ocr_text.strip():
         flagged = run_claim_audit(ocr_text)
         if flagged:
             s = MIL_STRINGS[lang]
             phrases_str = ", ".join([f"`{p}`" for p in flagged])
             st.warning(
-                s["claim_audit_title"] + ": "
-                + s["claim_audit_body"].format(phrases=phrases_str)
+                s["claim_audit_title"] + ": " + s["claim_audit_body"].format(phrases=phrases_str)
             )
 
-    # MIL Feature 2: Credibility Score Badge
     render_credibility_badge(match_type, external_data, lang=lang)
 
-    # MIL Feature 3: Recall Alert
     recall_kw = ""
     if matched_med and matched_med.get("drug_name"):
         recall_kw = matched_med["drug_name"].split("/")[0].split()[0]
@@ -1761,14 +1625,12 @@ def render_verification_results(matched_med, match_type, confidence, match_reaso
         recall_kw = barcodes[0]["data"][:30]
     render_recall_alert(recall_kw, lang=lang)
 
-    # MIL Feature 4: Cross-Check Table
     if matched_med or (external_data and external_data.get("openfda")):
         render_cross_check_table(matched_med, ocr_text, external_data, lang=lang)
 
     if external_data:
         render_external_data_cards(external_data)
 
-    # MIL Feature 5: Educational Guide
     render_mil_guide(lang=lang)
 
 
@@ -1776,7 +1638,10 @@ def render_rxnav_card(rxnav_data):
     if not rxnav_data:
         return
 
-    badges = "".join([f'<span style="background-color: #F3E8FF; color: #7E22CE; font-size: 0.85rem; padding: 4px 12px; border-radius: 9999px; font-weight: 700; border: 1px solid #E9D5FF; margin-right: 6px; display: inline-block; margin-bottom: 6px;">CUI: {cui}</span>' for cui in rxnav_data])
+    badges = "".join([
+        f'<span style="background-color: #F3E8FF; color: #7E22CE; font-size: 0.85rem; padding: 4px 12px; border-radius: 9999px; font-weight: 700; border: 1px solid #E9D5FF; margin-right: 6px; display: inline-block; margin-bottom: 6px;">CUI: {cui}</span>' 
+        for cui in rxnav_data
+    ])
 
     html = f"""
     <div style="background: linear-gradient(145deg, #FAF5FF 0%, #F3E8FF 100%); border: 1.5px solid #E9D5FF; border-radius: 18px; padding: 1.5rem; color: #581C87; margin-top: 1.25rem; box-shadow: 0 10px 24px rgba(168, 85, 247, 0.08);">
