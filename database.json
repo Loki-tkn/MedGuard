@@ -1,0 +1,80 @@
+{
+  "medicines": [
+    {
+      "barcode": "8934567890123",
+      "keywords": [
+        "paracetamol",
+        "panadol",
+        "efferalgan",
+        "caffeine",
+        "panadol extra"
+      ],
+      "drug_name": "Panadol Extra 500mg",
+      "active_ingredient": "Paracetamol 500mg, Caffeine 65mg",
+      "dosage": "Adults: 1-2 tablets every 4-6 hours as needed. Maximum 8 tablets in 24 hours.",
+      "uses": "Relief of mild to moderate pain (headache, migraine, toothache) and reduction of fever.",
+      "contraindications": "Hypersensitivity to paracetamol or caffeine, severe hepatic impairment, children under 12."
+    },
+    {
+      "barcode": "8935001234567",
+      "keywords": [
+        "amoxicillin",
+        "amoxil",
+        "trimox",
+        "antibiotic",
+        "amoxicilline"
+      ],
+      "drug_name": "Amoxicillin 500mg Capsule",
+      "active_ingredient": "Amoxicillin Trihydrate 500mg",
+      "dosage": "Adults: 250mg to 500mg every 8 hours, or as prescribed by a physician.",
+      "uses": "Treatment of bacterial infections including respiratory tract, ear, nose, throat, and skin infections.",
+      "contraindications": "History of hypersensitivity to penicillins or cephalosporins, infectious mononucleosis."
+    },
+    {
+      "barcode": "8936009876543",
+      "keywords": [
+        "ibuprofen",
+        "nurofen",
+        "advil",
+        "motrin",
+        "anti-inflammatory"
+      ],
+      "drug_name": "Nurofen Express 400mg",
+      "active_ingredient": "Ibuprofen 400mg",
+      "dosage": "Adults and adolescents over 12: 1 tablet with water up to 3 times daily after meals. Max 1200mg/day.",
+      "uses": "Symptomatic relief of muscular pain, joint pain, backache, headache, fever, and inflammation.",
+      "contraindications": "Active gastrointestinal ulceration/bleeding, severe heart failure, severe renal/hepatic impairment, third trimester of pregnancy."
+    },
+    {
+      "barcode": "8937004567890",
+      "keywords": [
+        "cetirizine",
+        "zyrtec",
+        "reactine",
+        "antihistamine",
+        "allergy"
+      ],
+      "drug_name": "Zyrtec Allergy Relief 10mg",
+      "active_ingredient": "Cetirizine Dihydrochloride 10mg",
+      "dosage": "Adults and children over 12: 1 tablet (10mg) once daily.",
+      "uses": "Relief of nasal and ocular symptoms of seasonal/perennial allergic rhinitis, and chronic idiopathic urticaria (hives).",
+      "contraindications": "Severe renal impairment (creatinine clearance < 10 ml/min), hypersensitivity to cetirizine or hydroxyzine."
+    },
+    {
+      "barcode": "8938001122334",
+      "keywords": [
+        "omeprazole",
+        "losec",
+        "prilosec",
+        "zegerid",
+        "antacid",
+        "ppi"
+      ],
+      "drug_name": "Prilosec / Omeprazole 20mg",
+      "active_ingredient": "Omeprazole 20mg",
+      "dosage": "Adults: 1 capsule daily before a meal for 14 days, swallowed whole.",
+      "uses": "Treatment of frequent heartburn, gastroesophageal reflux disease (GERD), and gastric/duodenal ulcers.",
+      "contraindications": "Hypersensitivity to substituted benzimidazoles, concomitant use with nelfinavir."
+    }
+  ]
+}
