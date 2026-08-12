@@ -1,0 +1,9 @@
+streamlit
+easyocr
+pyzbar
+opencv-python-headless
+Pillow
+thefuzz
+python-Levenshtein
+pandas
+requests
