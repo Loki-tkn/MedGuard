@@ -280,6 +280,69 @@ _CSS_TEMPLATE = textwrap.dedent("""
             font-weight: 700;
         }
 
+        /* Pill-shaped segmented tab control (reference-inspired) */
+        [data-testid="stTabs"] div[data-baseweb="tab-list"] {
+            background-color: #F3FCFA;
+            border-radius: 9999px;
+            padding: 6px;
+            gap: 4px;
+            border: 1px solid #D1EBE3;
+        }
+        [data-testid="stTabs"] button[data-baseweb="tab"] {
+            border-radius: 9999px;
+            padding: 10px 22px;
+            font-weight: 700;
+            color: #4A6363;
+            background-color: transparent;
+        }
+        [data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] {
+            background-color: #FFFFFF;
+            color: #176B6B;
+            box-shadow: 0 2px 10px rgba(32, 178, 108, 0.18);
+        }
+        [data-testid="stTabs"] div[data-baseweb="tab-highlight"] {
+            display: none;
+        }
+        [data-testid="stTabs"] div[data-baseweb="tab-border"] {
+            display: none;
+        }
+
+        /* Pill-shaped buttons */
+        .stButton > button {
+            border-radius: 9999px !important;
+            background-color: #20B26C !important;
+            color: #FFFFFF !important;
+            border: none !important;
+            font-weight: 700 !important;
+            padding: 0.55rem 1.5rem !important;
+            box-shadow: 0 4px 12px rgba(32, 178, 108, 0.25) !important;
+            transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+        }
+        .stButton > button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(32, 178, 108, 0.35) !important;
+            color: #FFFFFF !important;
+        }
+        [data-testid="stFileUploaderDropzone"] button {
+            border-radius: 9999px !important;
+            font-weight: 600 !important;
+        }
+        [data-testid="stMetricValue"] {
+            color: #20B26C !important;
+            font-weight: 800 !important;
+        }
+
+        /* Sidebar small-caps section eyebrow labels (nav grouping look) */
+        .sidebar-eyebrow {
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: #6B8F89;
+            margin-top: 0.25rem;
+            margin-bottom: -0.6rem;
+        }
+
         .raw-box {
             background-color: #F8FAFC;
             border: 1px solid #CBD5E1;
@@ -1278,6 +1341,7 @@ def main():
         st.session_state["lang"] = "en"
 
     with st.sidebar:
+        st.markdown('<div class="sidebar-eyebrow">Preferences</div>', unsafe_allow_html=True)
         st.markdown("### 🌍 Language / Ngôn ngữ")
         lang_choice = st.radio(
             label="",
@@ -1291,6 +1355,7 @@ def main():
         lang = st.session_state["lang"]
 
         st.divider()
+        st.markdown('<div class="sidebar-eyebrow">Configuration</div>', unsafe_allow_html=True)
         st.header("🌐 Medical Database Source")
         
         remote_url_input = st.text_input(
@@ -1318,6 +1383,7 @@ def main():
         st.caption("Cache TTL: 3600 seconds (1 hour)")
 
         st.divider()
+        st.markdown('<div class="sidebar-eyebrow">System</div>', unsafe_allow_html=True)
         st.header("⚙️ Engine Status")
         st.success("✅ **OpenCV Barcode Engine**: Ready")
 
@@ -1334,6 +1400,7 @@ def main():
         st.success("✅ **OpenFDA API**: Active (Cached)")
 
         st.divider()
+        st.markdown('<div class="sidebar-eyebrow">Data</div>', unsafe_allow_html=True)
         st.header("📚 Active Dataset")
         st.metric("Indexed Medicines", len(database_df))
 
